@@ -1,17 +1,28 @@
+const database = require('../data/client');
 module.exports = async ({
-    threadId,
-    corinthiansScore,
-    oponenteScore,
-    playerScores
+    corinthians_score,
+    match_date,
+    match_title,
+    oponente_score,
+    player_scores,
+    thread_id
 }) => {
 
     console.log({
-        threadId,
-        corinthiansScore,
-        oponenteScore,
-        playerScores
+        corinthians_score,
+        match_date,
+        match_title,
+        oponente_score,
+        player_scores,
+        thread_id
     });
 
-    process.exit();
-
+    await database.match_results.insert({
+        corinthians_score,
+        match_date,
+        match_title,
+        oponente_score,
+        player_scores,
+        thread_id
+    });
 }
