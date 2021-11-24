@@ -1,8 +1,14 @@
 const reddit = require('../reddit/client');
 const parseCommand = require('../util/parse_command');
+const database = require('../data/client');
 module.exports = async ({
+    match_date,
     threadId
 }) => {
+    let matchResults = await database.match_results.select.by.match_date({
+        match_date
+    });
+    matchResults = matchResults.rows[0];
     const thread = await reddit.getSubmission(threadId).fetch();
     console.log(thread.comments);
     for (const comment of thread.comments) {
@@ -26,6 +32,20 @@ module.exports = async ({
             opponente: oponente,
             player
         });
+
+        const scoreCard = {
+            resultado: 0,
+            corinthians: 0,
+            oponente: 0,
+            player: 0
+        };
+
+        if (resultado) {
+            resultado = resultado.split('/');
+            const corinthians = resultado[0];
+            const 
+
+        }
 
     }
 }
