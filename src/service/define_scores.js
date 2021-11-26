@@ -22,7 +22,7 @@ module.exports = async ({
         match_date,
         match_title,
         oponente_score,
-        player_scores,
+        player_scores: JSON.stringify(player_scores),
         thread_id
     });
 }
