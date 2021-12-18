@@ -23,6 +23,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', router.index);
 app.use('/form', router.form);
 app.use('/wiki', router.wiki);
+app.use('/matches', router.matches);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

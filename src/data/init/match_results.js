@@ -8,6 +8,8 @@ module.exports = async()=>{
             oponente_score INT NOT NULL,
             corinthians_score INT NOT NULL,
             player_scores JSONB NOT NULL,
+            results_processed BOOLEAN NOT NULL DEFAULT FALSE,
+            wiki_page TEXT,
             PRIMARY KEY(match_date)
         );`
     );

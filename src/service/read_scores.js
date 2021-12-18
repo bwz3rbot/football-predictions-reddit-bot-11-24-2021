@@ -8,6 +8,7 @@ module.exports = async ({
     threadId
 }) => {
     const year = moment().format('YYYY');
+    console.log("Selecting match results by match date: ", match_date);
     let matchResults = await database.match_results.select.by.match_date({
         match_date
     });
@@ -129,4 +130,7 @@ module.exports = async ({
     for (const Comment of thread.comments) {
         await parseAndScoreComment(Comment);
     };
+    await database.match_results.update.results_processed({
+        match_date
+    });
 }

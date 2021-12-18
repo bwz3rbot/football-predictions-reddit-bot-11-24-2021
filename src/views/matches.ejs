@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+
+<body>
+    <h1><%= title %></h1>
+    <p>Welcome to <%= title %></p>
+
+    <% matches.forEach(match => { %>
+    Match Title: <%= match.match_title %> <br>
+    Match Date: <%= match.formatted_date %><br>
+    Thread Link: <a target="_blank" href="<%= match.thread_link %>"><%= match.thread_link %></a><br>
+    Oponente Score:<%= match.oponente_score %><br>
+    Corinthians Score: <%= match.corinthians_score %> <br>
+    Player Scores: <br>
+    <% match.player_scores.forEach(playerScore => { %>
+    Player Name: <%= playerScore.name %><br>
+    Player Score: <%= playerScore.score %>
+    <% }) %>
+    <% if (!match.results_processed) { %>
+    <button onclick="processScores('<%= match.match_date %>', '<%= match.thread_id %>')">Process Scores</button>
+    <% } %>
+    <% if (match.results_processed && !match.wiki_page) { %>
+    <button onclick="updateWiki('<%= match.match_date %>')">Update Wiki</button>
+    <% } %>
+    <% if (match.results_processed && match.wiki_page) { %>
+    Wiki Page: <a target="_blank" href=<%= match.wiki_page %>><%= match.wiki_page %></a>
+    <% } %>
+    <br><br>
+    <% }) %>
+</body>
+
+<script>
+    const processScores = async (match_date, thread_id) => {
+        return fetch('/matches/process', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                match_date,
+                thread_id
+            })
+        });
+    }
+    const updateWiki = async (match_date) => {
+        return fetch('/matches/update_wiki', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                match_date
+            })
+        });
+    }
+</script>
+
+</html>

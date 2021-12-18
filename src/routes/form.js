@@ -35,7 +35,7 @@ router.post('/submit', async (req, res, next) => {
         player_scores
     });
 
-    res.send(200);
+    res.redirect('/');
 });
 
 module.exports = router;

@@ -19,7 +19,8 @@ class Database {
 
         this.match_results = {
             insert: require('./queries/match_results/insert'),
-            select: require('./queries/match_results/select')
+            select: require('./queries/match_results/select'),
+            update: require('./queries/match_results/update')
         }
 
         this.wiki_settings = {

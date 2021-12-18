@@ -5,8 +5,10 @@ const snoowrap = require('../reddit/client');
 const moment = require('moment');
 
 
-module.exports = async (matchDate) => {
-    const formattedDate = moment(matchDate).format('MM-DD-YYYY');
+module.exports = async ({
+    match_date
+}) => {
+    const formattedDate = moment(match_date).format('MM-DD-YYYY');
     const wikiPageSettings = await database.wiki_settings.select();
 
     const headers = [" ", "User", "Score"];
@@ -25,7 +27,11 @@ module.exports = async (matchDate) => {
 
     console.log(`http://reddit.com/r/${process.env.SUBREDDIT_NAME}/wiki/${formattedDate}`);
     console.log("-- EDITING WIKI PAGE");
-    return snoowrap.getSubreddit(process.env.SUBREDDIT_NAME).getWikiPage(formattedDate).edit({
+    await snoowrap.getSubreddit(process.env.SUBREDDIT_NAME).getWikiPage(formattedDate).edit({
         text: `__${wikiPageSettings.rows[0].title_text}__\n\n\n${usersTable}`
+    });
+    await database.match_results.update.wiki_page({
+        wiki_page: `https://reddit.com/r/${process.env.SUBREDDIT_NAME}/wiki/${formattedDate}`,
+        match_date
     });
 }
