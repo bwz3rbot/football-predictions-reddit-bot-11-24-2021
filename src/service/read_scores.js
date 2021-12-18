@@ -103,5 +103,10 @@ module.exports = async ({
             await Comment.reply(text);
         });
 
+        await database.user_score.insert({
+            username: comment.author,
+            score: userScore
+        });
+
     }
 }

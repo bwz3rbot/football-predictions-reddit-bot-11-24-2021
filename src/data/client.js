@@ -21,10 +21,24 @@ class Database {
             insert: require('./queries/match_results/insert'),
             select: require('./queries/match_results/select')
         }
+
+        this.wiki_settings = {
+            insert: require('./queries/wiki_settings/insert'),
+            select: require('./queries/wiki_settings/select')
+        }
+
+        this.user_score = {
+            insert: require('./queries/user_score/insert'),
+            select: require('./queries/user_score/select'),
+            delete: require('./queries/user_score/delete')
+        }
     }
 
     async init() {
+        await require('./init/user_score')();
+        await require('./init/user_prediction')();
         await require('./init/match_results')();
+        await require('./init/wikisettings')();
     }
 }
 

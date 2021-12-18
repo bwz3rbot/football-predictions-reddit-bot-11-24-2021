@@ -2,9 +2,14 @@ require('dotenv').config();
 const readScoresService = require('./service/read_scores');
 const defineScores = require('./service/define_scores');
 const database = require('./data/client');
+const wikiEdit = require('./service/edit_wiki');
 
 (async () => {
     await database.init();
+    const wikiPageSettings = await database.wiki_settings.select();
+    if (!wikiPageSettings.rows.length) await database.wiki_settings.insert({
+        title_text: 'Wiki Title Text'
+    });
     const match_date = new Date();
     await defineScores({
         match_date,
@@ -31,4 +36,8 @@ const database = require('./data/client');
         match_date,
         threadId: "r14g0w"
     });
+
+    await wikiEdit(match_date);
+
+
 })();
