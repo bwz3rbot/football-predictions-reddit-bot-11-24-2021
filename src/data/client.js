@@ -36,7 +36,6 @@ class Database {
 
     async init() {
         await require('./init/user_score')();
-        await require('./init/user_prediction')();
         await require('./init/match_results')();
         await require('./init/wikisettings')();
     }

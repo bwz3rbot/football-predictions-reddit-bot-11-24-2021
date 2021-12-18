@@ -27,16 +27,25 @@ module.exports = async ({
     });
     scoreCard.resultado = scoreCard.resultado.toLowerCase();
     const thread = await reddit.getSubmission(threadId).fetch();
-    for (const Comment of thread.comments) {
+    const usersScored = [];
+    thread.comments.forEach(async (Comment) => {
         const comment = JSON.parse(JSON.stringify(Comment));
-        console.log(comment.id);
-        console.log(comment.body);
         const command = parseCommand(comment.body);
-        if (!command) return reddit.getComment(comment.id).reply('Command malformatted');
-        console.log({
-            command
-        });
 
+        // Command malformatted
+        if (!command) return Comment.reply('Command malformatted');
+
+        // User already predicted
+        let hasAlreadyPredicted = false;
+        if (usersScored.includes(comment.author)) hasAlreadyPredicted = true;
+        if (hasAlreadyPredicted) return Comment.reply("You may only submit one prediction per match!");
+
+
+
+
+
+        // Score prediction
+        usersScored.push(comment.author);
         let userScore = 0;
         let perfectScore = true;
 
@@ -107,6 +116,5 @@ module.exports = async ({
             username: comment.author,
             score: userScore
         });
-
-    }
+    });
 }

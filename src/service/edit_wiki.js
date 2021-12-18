@@ -1,9 +1,7 @@
 const database = require('../data/client');
 const SnooMD = require('snoomd');
 const snoomd = new SnooMD();
-const WikiEditor = require('../util/WikiEditor');
 const snoowrap = require('../reddit/client');
-const editor = new WikiEditor(snoowrap);
 const moment = require('moment');
 
 

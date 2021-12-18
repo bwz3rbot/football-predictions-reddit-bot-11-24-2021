@@ -21,7 +21,6 @@ const wikiEdit = require('./service/edit_wiki');
                 name: "james",
                 score: 12,
             },
-
             {
                 name: "mark",
                 score: 1
@@ -38,6 +37,4 @@ const wikiEdit = require('./service/edit_wiki');
     });
 
     await wikiEdit(match_date);
-
-
 })();
