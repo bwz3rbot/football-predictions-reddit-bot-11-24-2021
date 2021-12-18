@@ -30,21 +30,23 @@ module.exports = async ({
     scoreCard.resultado = scoreCard.resultado.toLowerCase();
     const thread = await reddit.getSubmission(threadId).fetch();
     const usersScored = [];
-    thread.comments.forEach(async (Comment) => {
+
+    const parseAndScoreComment = async (Comment) => {
         const comment = JSON.parse(JSON.stringify(Comment));
         const command = parseCommand(comment.body);
 
         // Command malformatted
-        if (!command) return Comment.reply('Command malformatted');
+        if (!command) return Comment.reply('Command malformatted').catch();
 
         // User already predicted
         let hasAlreadyPredicted = false;
+        console.log({
+            usersScored
+        });
+        console.log("Does usersScored include ", comment.author);
         if (usersScored.includes(comment.author)) hasAlreadyPredicted = true;
-        if (hasAlreadyPredicted) return Comment.reply("You may only submit one prediction per match!");
-
-
-
-
+        console.log(hasAlreadyPredicted);
+        if (hasAlreadyPredicted) return Comment.reply("You may only submit one prediction per match!").catch();
 
         // Score prediction
         usersScored.push(comment.author);
@@ -110,8 +112,11 @@ module.exports = async ({
             text,
             to: comment.author
         }).catch(async (err) => {
-            console.log(err.message);
-            await Comment.reply(text);
+            console.log("Error composing message: ", err.message);
+            console.log("Replying to comment...");
+            await Comment.reply(text).catch(err => {
+                console.log("Error replying to comment: ", err);
+            });
         });
 
         await database.user_score.insert({
@@ -119,5 +124,9 @@ module.exports = async ({
             score: userScore,
             year
         });
-    });
+    }
+
+    for (const Comment of thread.comments) {
+        await parseAndScoreComment(Comment);
+    };
 }

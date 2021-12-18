@@ -3,6 +3,11 @@ module.exports = async ({
     year,
     score
 }) => {
+    console.log("-----UPDATE USER SCORE TABLE-----", {
+        username,
+        year,
+        score
+    });
     return global.pool.query(
         `INSERT INTO user_score
         (
@@ -17,9 +22,10 @@ module.exports = async ({
         ON CONFLICT(username, year)
         DO UPDATE
         SET
-        score = user_score.score + $2;`,
+        score = user_score.score + $3;`,
         [
             username,
+            year,
             score
         ]
     );

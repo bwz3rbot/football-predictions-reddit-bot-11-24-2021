@@ -24,6 +24,7 @@ module.exports = async (matchDate) => {
     const usersTable = snoomd.table(headers, tableRows);
 
     console.log(`http://reddit.com/r/${process.env.SUBREDDIT_NAME}/wiki/${formattedDate}`);
+    console.log("-- EDITING WIKI PAGE");
     return snoowrap.getSubreddit(process.env.SUBREDDIT_NAME).getWikiPage(formattedDate).edit({
         text: `__${wikiPageSettings.rows[0].title_text}__\n\n\n${usersTable}`
     });

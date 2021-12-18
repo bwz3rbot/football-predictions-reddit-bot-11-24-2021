@@ -1,39 +1,41 @@
-require('dotenv').config();
-const readScoresService = require('./service/read_scores');
-const defineScores = require('./service/define_scores');
-const database = require('./data/client');
-const wikiEdit = require('./service/edit_wiki');
-(async () => {
-    await database.init();
-    const wikiPageSettings = await database.wiki_settings.select();
-    if (!wikiPageSettings.rows.length) await database.wiki_settings.insert({
-        title_text: 'Wiki Title Text'
-    });
-    const match_date = new Date();
-    await defineScores({
-        match_date,
-        match_title: "Corinthians VS Oponente 11/24/2021",
-        thread_id: "r14g0w",
-        corinthians_score: 1,
-        oponente_score: 2,
-        player_scores: [{
-                name: "james",
-                score: 12,
-            },
-            {
-                name: "mark",
-                score: 1
-            }, {
-                name: "todd",
-                score: 5
-            }
-        ]
-    });
+var createError = require('http-errors');
+var express = require('express');
+var path = require('path');
+var cookieParser = require('cookie-parser');
+var logger = require('morgan');
 
-    await readScoresService({
-        match_date,
-        threadId: "r14g0w"
-    });
+var indexRouter = require('./routes/index');
+var usersRouter = require('./routes/users');
 
-    await wikiEdit(match_date);
-})();
+var app = express();
+
+// view engine setup
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
+
+app.use(logger('dev'));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.use('/', indexRouter);
+app.use('/users', usersRouter);
+
+// catch 404 and forward to error handler
+app.use(function(req, res, next) {
+  next(createError(404));
+});
+
+// error handler
+app.use(function(err, req, res, next) {
+  // set locals, only providing error in development
+  res.locals.message = err.message;
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+  // render the error page
+  res.status(err.status || 500);
+  res.render('error');
+});
+
+module.exports = app;
