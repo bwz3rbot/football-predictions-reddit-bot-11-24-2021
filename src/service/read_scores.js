@@ -2,10 +2,12 @@ const reddit = require('../reddit/client');
 const parseCommand = require('../util/parse_command');
 const database = require('../data/client');
 const snoowrap = require('../reddit/client');
+const moment = require('moment');
 module.exports = async ({
     match_date,
     threadId
 }) => {
+    const year = moment().format('YYYY');
     let matchResults = await database.match_results.select.by.match_date({
         match_date
     });
@@ -114,7 +116,8 @@ module.exports = async ({
 
         await database.user_score.insert({
             username: comment.author,
-            score: userScore
+            score: userScore,
+            year
         });
     });
 }

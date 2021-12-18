@@ -3,7 +3,6 @@ const readScoresService = require('./service/read_scores');
 const defineScores = require('./service/define_scores');
 const database = require('./data/client');
 const wikiEdit = require('./service/edit_wiki');
-
 (async () => {
     await database.init();
     const wikiPageSettings = await database.wiki_settings.select();

@@ -11,7 +11,7 @@ module.exports = async (matchDate) => {
 
     const headers = [" ", "User", "Score"];
     const tableRows = [];
-    const userScores = await database.user_score.select.all();
+    const userScores = await database.user_score.select.all.by.year(moment().format('YYYY'));
     console.log("paginating through the predictions...");
     for (let i = 0; i < userScores.rows.length; i++) { // Paginate through the predictions database.
         // For each prediction, generate a table
