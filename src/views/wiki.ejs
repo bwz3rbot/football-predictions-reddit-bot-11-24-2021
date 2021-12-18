@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title><%= title %></title>
+  <link rel='stylesheet' href='/stylesheets/style.css' />
+</head>
+
+<body>
+  <h1><%= title %></h1>
+  <p>Welcome to <%= title %></p>
+  <p>Current Wiki Title: <%= currentTitle %> </p>
+
+  <form action="/wiki/title" method="post">
+    <label for="wikititle">Title</label>
+    <br>
+    <input type="text" name="titletext" required>
+    <br><br>
+    <input type="submit" value="Submit">
+  </form>
+</body>
+
+</html>

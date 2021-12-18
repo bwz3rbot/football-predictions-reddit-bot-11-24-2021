@@ -4,7 +4,14 @@ const defineScoresService = require('../service/define_scores');
 const moment = require('moment');
 
 /* POST submit form. */
-router.post('/', async (req, res, next) => {
+router.get('/', async (req, res, next) => {
+    res.render('form', {
+        title: "Submit Form"
+    });
+});
+
+/* POST submit form. */
+router.post('/submit', async (req, res, next) => {
 
     const matchdate = new Date(req.body.matchdate);
     const formattedMatchDate = moment(matchdate).format('MM-DD-YYYY');

@@ -1,4 +1,6 @@
 module.exports = {
     index: require('./index'),
-    submitform: require('./submitform')
+    form: require('./form'),
+    submitform: require('./form'),
+    wiki: require('./wiki')
 }
