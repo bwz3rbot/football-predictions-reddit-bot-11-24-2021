@@ -9,13 +9,24 @@ class Database {
         port,
         database
     }) {
-        global.pool = new Pool({
-            user,
-            password,
-            host,
-            port,
-            database
-        });
+        let options = {};
+        if (process.env.DATABASE_URL) {
+            options = {
+                connectionString: process.env.DATABASE_URL,
+                ssl: {
+                    rejectUnauthorized: false
+                }
+            }
+        } else {
+            options = {
+                user,
+                password,
+                host,
+                port,
+                database
+            }
+        }
+        global.pool = new Pool(options);
 
         this.match_results = {
             insert: require('./queries/match_results/insert'),
