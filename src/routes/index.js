@@ -5,7 +5,7 @@ const router = express.Router();
 router.get('/', async (req, res, next) => {
 
   res.render('index', {
-    title: 'Reddit Bot'
+    title: 'Football Predictions'
   });
   
 });

@@ -1,20 +1,7 @@
-<!DOCTYPE html>
-<html>
-
-<head>
-  <title><%= title %></title>
-  <link rel='stylesheet' href='/stylesheets/style.css' />
-</head>
-
-<body>
-  <h1><%= title %></h1>
-  <p>Welcome to <%= title %></p>
-
-  <a href="/wiki">Update Wiki Settings</a>
-  <br>
-  <a href="/form">Input Match Results</a>
-  <br>  
-  <a href="/matches">View Matches</a>
-</body>
-
-</html>
+<%- include('partial/head') %>
+<a href="/wiki">Update Wiki Settings</a>
+<br>
+<a href="/form">Input Match Results</a>
+<br>
+<a href="/matches">View Matches</a>
+<%- include('partial/foot') %>
