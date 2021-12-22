@@ -8,11 +8,9 @@ const moment = require('moment');
 /* GET Matches. */
 router.get('/', async (req, res, next) => {
     const matches = await database.match_results.select.all();
-    console.log(matches.rows);
-
     res.render('matches', {
         title: 'Matches',
-        matches: matches.rows.map((row)=>{
+        matches: matches.rows.map((row) => {
             return {
                 ...row,
                 formatted_date: moment(row.match_date).format('MM-DD-YYYY'),
@@ -24,21 +22,19 @@ router.get('/', async (req, res, next) => {
 
 /* POST Matches. */
 router.post('/process', async (req, res, next) => {
-    console.log(req.body);
-    const match_date = new Date(req.body.match_date)
     await readScoresService({
-        match_date,
+        match_date: new Date(req.body.match_date),
         threadId: req.body.thread_id
     });
+    res.send(200);
 });
 
 /* POST Update Wiki. */
 router.post('/update_wiki', async (req, res, next) => {
-    console.log(req.body);
-    const match_date = new Date(req.body.match_date)
     await editWikiService({
-        match_date
+        match_date: new Date(req.body.match_date)
     });
+    res.send(200);
 });
 
 module.exports = router;

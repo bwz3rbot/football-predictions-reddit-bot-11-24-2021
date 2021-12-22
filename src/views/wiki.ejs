@@ -1,8 +1,8 @@
 <%- include('partial/head') %>
-<p>Current Wiki Title: <%= currentTitle %> </p>
+<p>Current Wiki Title: <br> <%= currentTitle %> </p>
 
 <form action="/wiki/title" method="post">
-  <label for="wikititle">Title</label>
+  <label for="wikititle">Update wiki title text</label>
   <br>
   <input type="text" name="titletext" required>
   <br><br>

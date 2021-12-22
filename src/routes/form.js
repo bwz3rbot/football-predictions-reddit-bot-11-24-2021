@@ -12,9 +12,6 @@ router.get('/', async (req, res, next) => {
 
 /* POST submit form. */
 router.post('/submit', async (req, res, next) => {
-
-    const matchdate = new Date(req.body.matchdate);
-    const formattedMatchDate = moment(matchdate).format('MM-DD-YYYY');
     const player_scores = [];
     for (const playerNameKey of Array.from(Object.keys(req.body).filter(key => key.includes('playername')))) {
         const playerName = req.body[playerNameKey];
@@ -30,7 +27,7 @@ router.post('/submit', async (req, res, next) => {
         corinthians_score: req.body.corinthians,
         oponente_score: req.body.oponente,
         match_date: new Date(req.body.matchdate),
-        match_title: `Corinthians VS ${req.body.oponentename} - ${formattedMatchDate}`,
+        match_title: `Corinthians VS ${req.body.oponentename}`,
         thread_id: req.body.threadid,
         player_scores
     });

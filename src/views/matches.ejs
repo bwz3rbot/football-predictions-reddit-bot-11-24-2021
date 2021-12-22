@@ -5,24 +5,30 @@
 Oponente: <%= match.oponente_score %> | Corinthians: <%= match.corinthians_score %> <br>
 Player Scores: <br>
 <% match.player_scores.forEach(playerScore => { %>
-Player Name: <%= playerScore.name %><br>
-Player Score: <%= playerScore.score %>
+<%= playerScore.name %> - <%= playerScore.score %> <br>
 <% }) %>
 Thread: <a target="_blank" href="<%= match.thread_link %>"><%= match.thread_link %></a><br>
 <% if (!match.results_processed) { %>
 <button onclick="processScores('<%= match.match_date %>', '<%= match.thread_id %>')">Process Scores</button>
 <% } %>
 <% if (match.results_processed && !match.wiki_page) { %>
-<button onclick="updateWiki('<%= match.match_date %>')">Update Wiki</button>
+<button onclick="updateWiki('<%= match.match_date %>', '<%= match.thread_id %>')">Update Wiki</button>
 <% } %>
 <% if (match.results_processed && match.wiki_page) { %>
 Wiki: <a target="_blank" href=<%= match.wiki_page %>><%= match.wiki_page %></a>
 <% } %>
-<br><br>
+<div class="container mt-2">
+    <div class="spinner-grow spinner-<%= match.thread_id %>" hidden role="status">
+        <span class="sr-only"></span>
+    </div>
+</div>
+<br>
 <% }) %>
+
 <script>
     const processScores = async (match_date, thread_id) => {
-        return fetch('/matches/process', {
+        $(`.spinner-${thread_id}`).removeAttr('hidden');
+        await fetch('/matches/process', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -32,9 +38,11 @@ Wiki: <a target="_blank" href=<%= match.wiki_page %>><%= match.wiki_page %></a>
                 thread_id
             })
         });
+        return location.reload();
     }
-    const updateWiki = async (match_date) => {
-        return fetch('/matches/update_wiki', {
+    const updateWiki = async (match_date, thread_id) => {
+        $(`.spinner-${thread_id}`).removeAttr('hidden');
+        await fetch('/matches/update_wiki', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -43,6 +51,7 @@ Wiki: <a target="_blank" href=<%= match.wiki_page %>><%= match.wiki_page %></a>
                 match_date
             })
         });
+        return location.reload();
     }
 </script>
 <%- include('partial/foot') %>

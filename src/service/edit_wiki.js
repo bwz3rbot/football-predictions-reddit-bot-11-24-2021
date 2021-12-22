@@ -8,12 +8,12 @@ const moment = require('moment');
 module.exports = async ({
     match_date
 }) => {
-    const formattedDate = moment(match_date).format('MM-DD-YYYY');
+    const year = moment(match_date).format('YYYY');
     const wikiPageSettings = await database.wiki_settings.select();
 
     const headers = [" ", "User", "Score"];
     const tableRows = [];
-    const userScores = await database.user_score.select.all.by.year(moment().format('YYYY'));
+    const userScores = await database.user_score.select.all.by.year(year);
     console.log("paginating through the predictions...");
     for (let i = 0; i < userScores.rows.length; i++) { // Paginate through the predictions database.
         // For each prediction, generate a table
@@ -25,13 +25,13 @@ module.exports = async ({
     }
     const usersTable = snoomd.table(headers, tableRows);
 
-    console.log(`http://reddit.com/r/${process.env.SUBREDDIT_NAME}/wiki/${formattedDate}`);
+    console.log(`http://reddit.com/r/${process.env.SUBREDDIT_NAME}/wiki/${year}`);
     console.log("-- EDITING WIKI PAGE");
-    await snoowrap.getSubreddit(process.env.SUBREDDIT_NAME).getWikiPage(formattedDate).edit({
+    await snoowrap.getSubreddit(process.env.SUBREDDIT_NAME).getWikiPage(year).edit({
         text: `__${wikiPageSettings.rows[0].title_text}__\n\n\n${usersTable}`
     });
     await database.match_results.update.wiki_page({
-        wiki_page: `https://reddit.com/r/${process.env.SUBREDDIT_NAME}/wiki/${formattedDate}`,
+        wiki_page: `https://reddit.com/r/${process.env.SUBREDDIT_NAME}/wiki/${year}`,
         match_date
     });
 }
