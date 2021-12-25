@@ -80,7 +80,7 @@ module.exports = async ({
         for (const playerScore of playerScores) {
             const playerName = playerScore[0].toLowerCase();
             const score = parseInt(playerScore[1]);
-            const matchResult = matchResults.player_scores.find(player => player.name === playerName);
+            const matchResult = matchResults.player_scores.find(player => player.name.toLowerCase() === playerName);
             if (!matchResult || matchResult.score != score) {
                 userScore -= 10;
                 perfectScore = false;
