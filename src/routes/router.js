@@ -4,5 +4,6 @@ module.exports = {
     submitform: require('./form'),
     wiki: require('./wiki'),
     matches: require('./matches'),
-    edit_score: require('./edit_score')
+    edit_score: require('./edit_score'),
+    leaderboard: require('./leaderboard')
 }

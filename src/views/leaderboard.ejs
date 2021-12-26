@@ -1,0 +1,6 @@
+<%- include('partial/head') %>
+<% leaderboard.forEach(user => { %>
+<%= user.position %>) u/<%= user.username %> - <%= user.score %> 
+<br>
+<% }) %>
+<%- include('partial/foot') %>
