@@ -4,7 +4,7 @@ module.exports = async ({
     return global.pool.query(
         `INSERT INTO wiki_settings
         (
-            title_text, 
+            title_text,
             id
         )
         VALUES

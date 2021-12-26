@@ -1,0 +1,128 @@
+<%- include('partial/head') %>
+<!-- Update Page Name -->
+Input Username: <br>
+<input type="text" id="username">
+<br><br>
+<button onclick="viewScore()">View Current Score</button> <button onclick="deleteUser()">Delete User</button>
+
+<br><br>
+Score:
+<br>
+<span id="currentscore"></span>
+<br><br>
+
+Update Score: <br>
+<input type="number" id="updateto">
+<br><br>
+<button onclick="updateScore()">Update</button>
+<br><br>
+
+<br><br>
+
+<button onclick="deleteAllScores()">Delete All Scores</button>
+<script>
+    const viewScore = async () => {
+        const username = document.getElementById('username');
+        if (!username.value || username.value === '') {
+            await alert("Must include username!");
+            return username.select();
+        }
+        const res = await fetch('/edit_score/view', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                username: username.value
+            })
+        });
+        const {
+            score
+        } = await res.json();
+        document.getElementById('currentscore').innerText = score || 'No Score';
+    }
+
+    const updateScore = async () => {
+        const username = document.getElementById('username');
+        if (!username.value || username.value === '') {
+            await alert("Must include username!");
+            return username.select();
+        }
+        const updateTo = document.getElementById('updateto');
+        if (!updateTo.value || updateTo.value === '') {
+            await alert("Must include score to update!");
+            return updateTo.select();
+        }
+        const res = await fetch('/edit_score/edit', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                username: username.value,
+                score: updateTo.value
+            })
+        });
+        const {
+            score
+        } = await res.json();
+        document.getElementById('currentscore').innerText = score;
+
+    }
+
+    const deleteUser = async () => {
+        const username = document.getElementById('username');
+        if (!username.value || username.value === '') {
+            await alert("Must include username!");
+            return username.select();
+        }
+
+        const confirmed = await confirm(
+            `Are you sure you want to remove u/${username.value} from the leaderboard? This action can not be undone!`
+        );
+
+        if (!confirmed) return;
+
+        const res = await fetch('/edit_score/delete_user', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                username: username.value
+            })
+        });
+
+        document.getElementById('currentscore').innerText =
+            `u/${username.value} has been deleted from the leaderboard`;
+
+    }
+
+    const deleteAllScores = async () => {
+
+
+        const confirmed = await confirm(
+            `Are you sure you want to delete all users from the leaderboard? This action can not be undone!`
+        );
+
+        if (!confirmed) return;
+
+
+        const confirmedTwice = await confirm(
+            `Just so we're clear - this will remove all data! Please confirm one more time and it shall be done!`
+        );
+
+
+        const res = await fetch('/edit_score/truncate_table', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        document.getElementById('currentscore').innerText =
+            `All data has been deleted from the leaderboard.`;
+
+    }
+</script>
+<%- include('partial/foot') %></br>

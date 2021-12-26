@@ -8,6 +8,7 @@ module.exports = async ({
     threadId
 }) => {
     const year = moment().format('YYYY');
+    const wikiSettings = await database.wiki_settings.select();
     console.log("Selecting match results by match date: ", match_date);
     let matchResults = await database.match_results.select.by.match_date({
         match_date
@@ -108,6 +109,7 @@ module.exports = async ({
         console.log(`${comment.author} total score = `, userScore);
         let text = `You scored ${userScore} points.`;
         if (perfectScore) text = text.concat(` - You had a perfect prediction!`);
+        text = text.concat(` Check out https://reddit.com/r/${process.env.SUBREDDIT_NAME}/wiki/${wikiSettings.rows[0].page_name}`);
         await snoowrap.composeMessage({
             subject: `${matchResults.match_title}`,
             text,

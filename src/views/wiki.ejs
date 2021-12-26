@@ -1,6 +1,7 @@
 <%- include('partial/head') %>
-<p>Current Wiki Title: <br> <%= currentTitle %> </p>
+<p>Current Wiki Title: <br> <%= currentTitle %> <br></p>
 
+<!-- Update title text -->
 <form action="/wiki/title" method="post">
   <label for="wikititle">Update wiki title text</label>
   <br>
@@ -8,4 +9,38 @@
   <br><br>
   <input type="submit" value="Submit">
 </form>
+<br><br>
+<!-- Update Page Name -->
+<p>Current Wiki Page:<br><a target="_blank" href="<%= wikiLink %>"><%= wikiLink %></a></p>
+
+
+<form action="/wiki/page_name" method="post">
+  <label for="pagename">Update wiki page name</label>
+  <br>
+  <input type="text" name="pagename" required>
+  <br><br>
+  <input type="submit" value="Submit">
+</form>
+<br><br>
+
+<button onclick="updateWiki()">Update Wiki</button>
+<div class="container mt-2">
+  <div class="spinner-grow" id="update-wiki-spinner" hidden role="status">
+    <span class="sr-only"></span>
+  </div>
+</div>
+
+
+<script>
+  const updateWiki = async () => {
+    $(`#update-wiki-spinner`).removeAttr('hidden');
+    await fetch('/wiki/update', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+    return location.reload();
+  }
+</script>
 <%- include('partial/foot') %>

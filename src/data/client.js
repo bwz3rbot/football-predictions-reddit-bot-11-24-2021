@@ -36,20 +36,22 @@ class Database {
 
         this.wiki_settings = {
             insert: require('./queries/wiki_settings/insert'),
-            select: require('./queries/wiki_settings/select')
+            select: require('./queries/wiki_settings/select'),
+            update: require('./queries/wiki_settings/update')
         }
 
         this.user_score = {
             insert: require('./queries/user_score/insert'),
             select: require('./queries/user_score/select'),
-            delete: require('./queries/user_score/delete')
+            delete: require('./queries/user_score/delete'),
+            update: require('./queries/user_score/update')
         }
     }
 
     async init() {
         await require('./init/user_score')();
         await require('./init/match_results')();
-        await require('./init/wikisettings')();
+        await require('./init/wiki_settings')();
     }
 }
 

@@ -3,5 +3,6 @@ module.exports = {
     form: require('./form'),
     submitform: require('./form'),
     wiki: require('./wiki'),
-    matches: require('./matches')
+    matches: require('./matches'),
+    edit_score: require('./edit_score')
 }

@@ -5,7 +5,15 @@
  */
 (async () => {
   require('dotenv').config();
-  await require('../data/client').init();
+  console.log("Initing database client");
+  const database = require('../data/client');
+  await database.init();
+  console.log("Selecting wiki settings");
+  const wikiSettings = await database.wiki_settings.select();
+  console.log(wikiSettings.rows);
+  if (!wikiSettings.rows.length) await database.wiki_settings.insert({
+    title_text: ''
+  });
   const app = require('../app');
   const debug = require('debug')('football-predictions:server');
   const http = require('http');
