@@ -4,14 +4,13 @@ const database = require('../data/client');
 const snoowrap = require('../reddit/client');
 const moment = require('moment');
 module.exports = async ({
-    match_date,
-    threadId
+    id
 }) => {
     const year = moment().format('YYYY');
     const wikiSettings = await database.wiki_settings.select();
-    console.log("Selecting match results by match date: ", match_date);
-    let matchResults = await database.match_results.select.by.match_date({
-        match_date
+    console.log("Selecting match results by id: ", id);
+    let matchResults = await database.match_results.select.by.id({
+        id
     });
     matchResults = matchResults.rows[0];
     console.log({
@@ -30,7 +29,7 @@ module.exports = async ({
         scoreCard
     });
     scoreCard.resultado = scoreCard.resultado.toLowerCase();
-    const thread = await reddit.getSubmission(threadId).fetch();
+    const thread = await reddit.getSubmission(matchResults.thread_id).fetch();
     const usersScored = [];
 
     const parseAndScoreComment = async (Comment) => {
@@ -133,6 +132,6 @@ module.exports = async ({
         await parseAndScoreComment(Comment);
     };
     await database.match_results.update.results_processed({
-        match_date
+        id
     });
 }

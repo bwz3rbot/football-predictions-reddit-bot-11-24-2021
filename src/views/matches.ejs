@@ -9,16 +9,16 @@ Player Scores: <br>
 <% }) %>
 Thread: <a target="_blank" href="<%= match.thread_link %>"><%= match.thread_link %></a><br>
 <% if (!match.results_processed) { %>
-<button onclick="processScores('<%= match.match_date %>', '<%= match.thread_id %>')">Process Scores</button>
+<button id="process-scores-btn-<%= match.id %>" onclick="processScores('<%= match.id %>')">Process Scores</button>
 <% } %>
 <% if (match.results_processed && !match.wiki_page) { %>
-<button onclick="updateWiki('<%= match.match_date %>', '<%= match.thread_id %>')">Update Wiki</button>
+<button id="update-wiki-btn-<%= match.id %>" onclick="updateWiki('<%= match.id %>')">Update Wiki</button>
 <% } %>
 <% if (match.results_processed && match.wiki_page) { %>
 Wiki: <a target="_blank" href=<%= match.wiki_page %>><%= match.wiki_page %></a>
 <% } %>
 <div class="container mt-2">
-    <div class="spinner-grow spinner-<%= match.thread_id %>" hidden role="status">
+    <div class="spinner-grow spinner-<%= match.id %>" hidden role="status">
         <span class="sr-only"></span>
     </div>
 </div>
@@ -26,29 +26,30 @@ Wiki: <a target="_blank" href=<%= match.wiki_page %>><%= match.wiki_page %></a>
 <% }) %>
 
 <script>
-    const processScores = async (match_date, thread_id) => {
-        $(`.spinner-${thread_id}`).removeAttr('hidden');
+    const processScores = async (id) => {
+        $(`.spinner-${id}`).removeAttr('hidden');
+        $(`#process-scores-btn-${id}`).hide();
         await fetch('/matches/process', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                match_date,
-                thread_id
+                id
             })
         });
         return location.reload();
     }
-    const updateWiki = async (match_date, thread_id) => {
-        $(`.spinner-${thread_id}`).removeAttr('hidden');
+    const updateWiki = async (id) => {
+        $(`.spinner-${id}`).removeAttr('hidden');
+        $(`#update-wiki-btn-${id}`).hide();
         await fetch('/matches/update_wiki', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                match_date
+                id
             })
         });
         return location.reload();

@@ -23,8 +23,7 @@ router.get('/', async (req, res, next) => {
 /* POST Matches. */
 router.post('/process', async (req, res, next) => {
     await readScoresService({
-        match_date: new Date(req.body.match_date),
-        threadId: req.body.thread_id
+        id: req.body.id
     });
     res.send(200);
 });
@@ -32,7 +31,7 @@ router.post('/process', async (req, res, next) => {
 /* POST Update Wiki. */
 router.post('/update_wiki', async (req, res, next) => {
     await editWikiService({
-        match_date: new Date(req.body.match_date)
+        id: req.body.id
     });
     res.send(200);
 });

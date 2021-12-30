@@ -6,15 +6,15 @@ module.exports = {
         );
     },
     by: {
-        match_date: async ({
-            match_date
+        id: async ({
+            id
         }) => {
             return global.pool.query(
                 `SELECT * FROM match_results
                 WHERE
-                match_date = $1;`,
+                id = $1;`,
                 [
-                    match_date
+                    id
                 ]
             )
         }
