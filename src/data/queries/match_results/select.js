@@ -2,7 +2,7 @@ module.exports = {
     all: async () => {
         return global.pool.query(
             `SELECT * FROM match_results
-            ORDER BY match_date DESC;`
+            ORDER BY id DESC;`
         );
     },
     by: {
