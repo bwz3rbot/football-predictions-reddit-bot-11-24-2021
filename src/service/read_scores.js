@@ -16,6 +16,9 @@ module.exports = async ({
     console.log({
         matchResults
     });
+    console.log({
+        PlayerScores: matchResults.player_scores
+    });
 
     const scoreCard = {
         corinthians: matchResults.corinthians_score,
@@ -70,8 +73,10 @@ module.exports = async ({
 
         // Score win / loss / tie (resultado)
         if (resultado && resultado === scoreCard.resultado) {
+            console.log("resultado matches. +100 points");
             userScore += 100
         } else if (resultado && resultado != scoreCard.resultado) {
+            console.log("resultado mismatch. -10 points");
             userScore -= 10;
             perfectScore = false;
         }
@@ -80,29 +85,52 @@ module.exports = async ({
         for (const playerScore of playerScores) {
             const playerName = playerScore[0].toLowerCase();
             const score = parseInt(playerScore[1]);
-            const matchResult = matchResults.player_scores.find(player => player.name.toLowerCase() === playerName);
-            if (!matchResult || matchResult.score != score) {
-                userScore -= 10;
+            let matchResult = matchResults.player_scores.find(player => player.name.toLowerCase() === playerName);
+            // If user guessed a player scored a goal who didnt - user loses 10 pts per goal guessed
+            if (!matchResult) {
+                const decrement = score * 10;
+                console.log("User guessed a player who did not make a goal. Minus ", decrement, " points");
+                userScore -= decrement;
                 perfectScore = false;
             } else {
-                userScore += 75;
+                // User gains 75 pts per goal guessed that the player did in fact score
+                matchResult = parseInt(matchResult);
+                console.log("User guessed a player who scored. Guess=", score," - actual score: ", matchResult);
+                for (let i = 0; i < matchResult; i++) {
+                    console.log("Gain 75 pts!");
+                    if (score <= matchResult) userScore += 75;
+                }
+                // If the user guessed an incorrect number of goals, lose 10 pts per goal over or under the actual total scored by the player
+                if (score != matchResult) {
+                    console.log("user guessed amount of goals incorrectly.");
+                    const decrement = (Math.abs(score - matchResult) * 10);
+                    userScore -= decrement;
+                    perfectScore = false;
+                }
             }
         }
 
         // Score oponente goal amount
         if (oponente === scoreCard.oponente) {
+            console.log("Oponente score guessed correctly. +50 pts");
             userScore += 50;
         } else {
+            console.log("Oponente score guessed incorrectly. lose 10 pts");
+            userScore -= 10;
             perfectScore = false;
         }
 
         // Score corinthians goal amount
         if (corinthians === scoreCard.corinthians) {
+            console.log("Corinthians score guessed correctly. +50 pts");
             userScore += 50;
         } else {
+            console.log("Corinthians score guessed incorrectly. Lose 10 pts");
+            userScore -= 10;
             perfectScore = false;
         }
 
+        console.log("Perfect Score? ", perfectScore);
         if (perfectScore) userScore += 50;
 
         console.log(`${comment.author} total score = `, userScore);
