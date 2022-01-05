@@ -58,7 +58,7 @@ module.exports = async ({
         let perfectScore = true;
 
         let resultado = command.args.get('resultado');
-        resultado = resultado.toLowerCase();
+        if (resultado) resultado = resultado.toLowerCase();
         let corinthians = parseInt(command.args.get('corinthians'));
         let oponente = parseInt(command.args.get('oponente'));
         let playerScores = Array.from(command.args).filter(arg => arg[0] != 'resultado' && arg[0] != 'corinthians' && arg[0] != 'oponente');
@@ -95,7 +95,7 @@ module.exports = async ({
             } else {
                 // User gains 75 pts per goal guessed that the player did in fact score
                 matchResult = parseInt(matchResult);
-                console.log("User guessed a player who scored. Guess=", score," - actual score: ", matchResult);
+                console.log("User guessed a player who scored. Guess=", score, " - actual score: ", matchResult);
                 for (let i = 0; i < matchResult; i++) {
                     console.log("Gain 75 pts!");
                     if (score <= matchResult) userScore += 75;
@@ -110,22 +110,22 @@ module.exports = async ({
             }
         }
 
-        // Score oponente goal amount
-        if (oponente === scoreCard.oponente) {
-            console.log("Oponente score guessed correctly. +50 pts");
+        // Score corinthians goal amount
+        if (!isNaN(corinthians) && corinthians === scoreCard.corinthians) {
+            console.log("Corinthians score guessed correctly. +50 pts");
             userScore += 50;
-        } else {
-            console.log("Oponente score guessed incorrectly. lose 10 pts");
+        } else if (!isNaN(corinthians) && corinthians != scoreCard.corinthians) {
+            console.log("Corinthians score guessed incorrectly. Lose 10 pts");
             userScore -= 10;
             perfectScore = false;
         }
 
-        // Score corinthians goal amount
-        if (corinthians === scoreCard.corinthians) {
-            console.log("Corinthians score guessed correctly. +50 pts");
+        // Score oponente goal amount
+        if (!isNaN(oponente) && oponente === scoreCard.oponente) {
+            console.log("Oponente score guessed correctly. +50 pts");
             userScore += 50;
-        } else {
-            console.log("Corinthians score guessed incorrectly. Lose 10 pts");
+        } else if (!isNaN(oponente) && oponente != scoreCard.oponente) {
+            console.log("Oponente score guessed incorrectly. lose 10 pts");
             userScore -= 10;
             perfectScore = false;
         }
