@@ -38,6 +38,7 @@ module.exports = async ({
     const parseAndScoreComment = async (Comment) => {
         const comment = JSON.parse(JSON.stringify(Comment));
         const command = parseCommand(comment.body);
+        console.log(command);
 
         // Command malformatted
         if (!command) return Comment.reply('Command malformatted').catch();
