@@ -159,7 +159,7 @@ module.exports = async ({
 
     for (const Comment of thread.comments) {
         await parseAndScoreComment(Comment)
-            .catch(err => {
+            .catch(async (err) => {
                 console.log(err);
                 await Comment.reply('There was an error handling your command! Please check the formatting.')
                     .catch(err => {
