@@ -158,7 +158,14 @@ module.exports = async ({
     }
 
     for (const Comment of thread.comments) {
-        await parseAndScoreComment(Comment);
+        await parseAndScoreComment(Comment)
+            .catch(err => {
+                console.log(err);
+                await Comment.reply('There was an error handling your command! Please check the formatting.')
+                    .catch(err => {
+                        console.log("Error replying to comment with error message: ", err);
+                    });
+            });
     };
     await database.match_results.update.results_processed({
         id
