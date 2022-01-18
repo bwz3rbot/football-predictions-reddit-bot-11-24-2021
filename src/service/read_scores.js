@@ -158,14 +158,20 @@ module.exports = async ({
     }
 
     for (const Comment of thread.comments) {
-        await parseAndScoreComment(Comment)
-            .catch(async (err) => {
-                console.log(err);
-                await Comment.reply('There was an error handling your command! Please check the formatting.')
-                    .catch(err => {
-                        console.log("Error replying to comment with error message: ", err);
-                    });
-            });
+        console.log("------ HANDLING COMMENT ------");
+        console.log(Comment.body);
+        if (Comment.removed || Comment.body === '[deleted]') {
+            console.log("Comment was removed or deleted. Skipping.");
+        } else {
+            await parseAndScoreComment(Comment)
+                .catch(async (err) => {
+                    console.log(err);
+                    await Comment.reply('There was an error handling your command! Please check the formatting.')
+                        .catch(err => {
+                            console.log("Error replying to comment with error message: ", err);
+                        });
+                });
+        }
     };
     await database.match_results.update.results_processed({
         id
