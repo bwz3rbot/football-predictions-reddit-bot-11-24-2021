@@ -1,7 +1,9 @@
 require('dotenv').config();
 const reddit = require('../reddit/client');
 (async () => {
-    const thread = await reddit.getSubmission('s71fi6').fetch();
+    const thread = await reddit.getSubmission('rwdt4d').fetch();
+    console.log(thread);
+    process.exit();
     console.log(thread.comments);
     for(const comment of thread.comments){
         if(comment.removed) console.log("Comment was removed");

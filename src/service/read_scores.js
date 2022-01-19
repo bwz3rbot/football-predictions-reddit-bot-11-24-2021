@@ -84,6 +84,7 @@ module.exports = async ({
 
         // Score player scores
         for (const playerScore of playerScores) {
+            console.log(playerScore);
             const playerName = playerScore[0].toLowerCase();
             const score = parseInt(playerScore[1]);
             let matchResult = matchResults.player_scores.find(player => player.name.toLowerCase() === playerName);
@@ -95,7 +96,8 @@ module.exports = async ({
                 perfectScore = false;
             } else {
                 // User gains 75 pts per goal guessed that the player did in fact score
-                matchResult = parseInt(matchResult);
+                matchResult = parseInt(matchResult.score);
+                
                 console.log("User guessed a player who scored. Guess=", score, " - actual score: ", matchResult);
                 for (let i = 0; i < matchResult; i++) {
                     console.log("Gain 75 pts!");
