@@ -5,6 +5,7 @@
  */
 (async () => {
   require('dotenv').config();
+  console.log("LAST UPDATE - 5/1/2022");
   console.log("Initing database client");
   const database = require('../data/client');
   await database.init();
