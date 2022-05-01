@@ -34,6 +34,12 @@ class Database {
             update: require('./queries/match_results/update')
         }
 
+        this.notification_blacklist = {
+            insert: require('./queries/notification_blacklist/insert'),
+            select: require('./queries/notification_blacklist/select'),
+            delete: require('./queries/notification_blacklist/delete')
+        }
+
         this.wiki_settings = {
             insert: require('./queries/wiki_settings/insert'),
             select: require('./queries/wiki_settings/select'),
@@ -52,6 +58,7 @@ class Database {
         await require('./init/user_score')();
         await require('./init/match_results')();
         await require('./init/wiki_settings')();
+        await require('./init/notification_blacklist')();
     }
 }
 

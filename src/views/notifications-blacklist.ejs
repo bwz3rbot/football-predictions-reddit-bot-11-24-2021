@@ -1,0 +1,85 @@
+<%- include('partial/head') %>
+<div class="container-fluid">
+  <div class="row justify-content-center">
+    <div class="col-md-6 col-lg-4">
+      <form id="blacklist_form">
+        <div class="form-row align-items-center">
+          <div class="col-auto">
+            <label class="sr-only" for="inlineFormInput">Add User</label>
+            <input id="username" type="text" class="form-control mb-2" id="inlineFormInput">
+          </div>
+          <div class="col-auto">
+            <button type="submit" class="btn btn-primary mb-2">Submit</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<ul id="blacklist" class="list-group">
+</ul>
+
+<script>
+  const getBlacklist = async () => {
+    const response = await fetch('/notifications/blacklist/users', {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json'
+      }
+    });
+    const list = await response.json();
+    return list;
+  }
+
+  getBlacklist()
+    .then(blacklist => {
+      console.log("Blacklist:");
+      console.log(blacklist);
+      for (const user of blacklist) {
+        const li = `<li onClick="deleteFromBlacklist('${user}')" class="list-group-item">u/${user}</li>`;
+        console.log("appending blacklist: ", li);
+        $("#blacklist").append(li);
+
+      }
+    });
+
+  const deleteFromBlacklist = async (username) => {
+
+    const confirmed = await confirm(`really remove ${username} from the blacklist?`);
+    if (!confirmed) return;
+    const response = await fetch('/notifications/blacklist/delete', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        username
+      })
+    });
+
+    return location.reload();
+  }
+
+  const form = document.getElementById('blacklist_form');
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const username = document.getElementById('username').value;
+    if (!username || username === '') return alert("Username can not be blank!");
+    console.log("Adding ", username, " to blacklist");
+
+
+    const response = await fetch('/notifications/blacklist/add', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        username
+      })
+    });
+
+    return location.reload();
+  });
+</script>
+<%- include('partial/foot') %>

@@ -5,5 +5,6 @@ module.exports = {
     wiki: require('./wiki'),
     matches: require('./matches'),
     edit_score: require('./edit_score'),
-    leaderboard: require('./leaderboard')
+    leaderboard: require('./leaderboard'),
+    notifications: require('./notifications')
 }

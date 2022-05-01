@@ -16,5 +16,8 @@ module.exports = {
                 ]
             )
         }
+    },
+    users: async () => {
+        return global.pool.query(`SELECT DISTINCT username FROM user_score;`);
     }
 }

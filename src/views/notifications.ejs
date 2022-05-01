@@ -1,0 +1,102 @@
+<%- include('partial/head') %>
+<a href="/notifications/blacklist">Click to edit notification blacklist</a>
+<form id="notification_form">
+  <div class="form-group">
+    <label class="sr-only" for="inlineFormInput">Subject</label>
+    <input id="message_subject" type="text" class="form-control mb-2" id="inlineFormInput">
+    <label for="exampleFormControlTextarea1">Body</label>
+    <textarea id="message_body" class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+    <label id="alert">-</label> <br>
+    <button id="submit_button" type="submit" class="btn m-3 btn-primary">Send</button>
+  </div>
+</form>
+<script>
+  const sleep = (ms) => new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve();
+    }, ms);
+  });
+
+  const submitButton = document.getElementById('submit_button');
+  const alertText = document.getElementById('alert');
+  const form = document.getElementById('notification_form');
+
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    submitButton.disabled = true;
+    const subject = document.getElementById('message_subject').value;
+    const body = document.getElementById('message_body').value;
+
+    if (!subject || subject === '') {
+      await alert("Please include a message subject");
+      submitButton.disabled = false;
+      return;
+    }
+    if (!body || body === '') {
+      await alert("Please include a message body");
+      submitButton.disabled = false;
+      return;
+
+    }
+
+    const confirmed = await confirm(
+      "Are you sure you really want to send this notification to the entire list of users?"
+    );
+    if (!confirmed) {
+      submitButton.disabled = false;
+      return;
+    };
+    const response = await fetch('/notifications/form/submit', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        subject,
+        body
+      })
+    });
+
+    const setAlertText = (text) => alertText.innerText = text;
+
+
+    setAlertText('Sending notification....\nPlease do not close this page until service has completed running.');
+
+    let status = {
+      busy: false,
+      messages: {
+        sent: 0,
+        queued: 0,
+        errors: 0,
+        total: 0
+      }
+    };
+    const statusString = () =>
+      `Sent: ${status.messages.sent}\nQueued: ${status.messages.queued}\nErrors: ${status.messages.errors}\nTotal: ${status.messages.total}`;
+    do {
+
+      const response = await fetch('/notifications/status', {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json'
+        }
+      });
+
+      status = await response.json();
+      if (status.busy) setAlertText(
+        `Still busy sending notifications....\nPlease do not close this page until service has completed running.\n${statusString()}`
+      );
+      await sleep(4500);
+    } while (status.busy);
+
+    let completeMessage;
+    if (status.messages.errors === 0) completeMessage = 'Notification service completed successfully!';
+    if (status.messages.errors > 0) completeMessage =
+      'Notification service completed with errors!\nPlease check the logs.';
+    setAlertText(
+      `${completeMessage}\n${statusString()}`);
+    submitButton.disabled =
+      false;
+  });
+</script>
+<%- include('partial/foot') %>

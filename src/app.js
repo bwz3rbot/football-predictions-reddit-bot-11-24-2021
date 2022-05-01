@@ -26,6 +26,7 @@ app.use('/wiki', router.wiki);
 app.use('/matches', router.matches);
 app.use('/edit_score', router.edit_score);
 app.use('/leaderboard', router.leaderboard);
+app.use('/notifications', router.notifications);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
