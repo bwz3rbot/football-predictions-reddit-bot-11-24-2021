@@ -62,13 +62,13 @@ module.exports = async ({
         if (resultado) resultado = resultado.toLowerCase();
         let corinthians = parseInt(command.args.get('corinthians'));
         let oponente = parseInt(command.args.get('oponente'));
-        let playerScores = Array.from(command.args).filter(arg => arg[0] != 'resultado' && arg[0] != 'corinthians' && arg[0] != 'oponente');
+        let guessedPlayerGoals = Array.from(command.args).filter(arg => arg[0] != 'resultado' && arg[0] != 'corinthians' && arg[0] != 'oponente');
 
         console.log({
             resultado,
             corinthians,
             oponente,
-            playerScores
+            playerScores: guessedPlayerGoals
         });
 
 
@@ -83,34 +83,43 @@ module.exports = async ({
         }
 
         // Score player scores
-        for (const playerScore of playerScores) {
-            console.log(playerScore);
-            const playerName = playerScore[0].toLowerCase();
-            const score = parseInt(playerScore[1]);
-            let matchResult = matchResults.player_scores.find(player => player.name.toLowerCase() === playerName);
-            // If user guessed a player scored a goal who didnt - user loses 10 pts per goal guessed
-            if (!matchResult) {
-                const decrement = score * 10;
-                console.log("User guessed a player who did not make a goal. Minus ", decrement, " points");
-                userScore -= decrement;
-                perfectScore = false;
-            } else {
-                // User gains 75 pts per goal guessed that the player did in fact score
-                matchResult = parseInt(matchResult.score);
-                
-                console.log("User guessed a player who scored. Guess=", score, " - actual score: ", matchResult);
-                for (let i = 0; i < matchResult; i++) {
-                    console.log("Gain 75 pts!");
-                    if (score <= matchResult) userScore += 75;
-                }
-                // If the user guessed an incorrect number of goals, lose 10 pts per goal over or under the actual total scored by the player
-                if (score != matchResult) {
-                    console.log("user guessed amount of goals incorrectly.");
-                    const decrement = (Math.abs(score - matchResult) * 10);
+        for (const guessedPlayerGoal of guessedPlayerGoals) {
+
+            const calculateGoals = () => {
+                console.log(guessedPlayerGoal);
+                const playerName = guessedPlayerGoal[0].toLowerCase();
+                const guessedGoalsNum = parseInt(guessedPlayerGoal[1]);
+
+                let actualGoalsNum = matchResults.player_scores.find(player => player.name.toLowerCase() === playerName);
+                // If user guessed a player scored a goal who didnt - user loses 10 pts per goal guessed
+                if (!actualGoalsNum) {
+                    const decrement = guessedGoalsNum * 10;
+                    console.log("User guessed a player who did not make a goal. Minus ", decrement, " points");
                     userScore -= decrement;
                     perfectScore = false;
+                    return;
+                }
+
+                // User gains 75 pts per goal guessed that the player did in fact score
+                actualGoalsNum = parseInt(actualGoalsNum.score);
+
+
+
+                console.log("User guessed a player who scored. Guess=", guessedGoalsNum, " - actual score: ", actualGoalsNum);
+                for (let i = 1; i <= guessedGoalsNum; i++) {
+                    if (i <= actualGoalsNum) {
+                        console.log(`${i} < ${actualGoalsNum}. Incrementing userScore += 75`);
+                        userScore += 75;
+                    }
+                    if (i > actualGoalsNum) {
+                        console.log(`${i} > ${actualGoalsNum}. Decrementing userScore -= 10`);
+                        perfectScore = false;
+                        userScore -= 10;
+                    }
                 }
             }
+
+            calculateGoals();
         }
 
         // Score corinthians goal amount
@@ -152,10 +161,14 @@ module.exports = async ({
             });
         });
 
-        await database.user_score.insert({
+        const user_score = await database.user_score.upsert({
             username: comment.author,
-            score: userScore,
-            year
+            score: userScore
+        });
+        // Reset total score to 0 if fall below
+        if (user_score.rows[0].score < 0) await database.user_score.update({
+            username: comment.author,
+            score: 0
         });
     }
 

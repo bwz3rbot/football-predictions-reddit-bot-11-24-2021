@@ -19,7 +19,8 @@ module.exports = async ({
         ON CONFLICT(username)
         DO UPDATE
         SET
-        score = user_score.score + $2;`,
+        score = user_score.score + $2
+        RETURNING *;`,
         [
             username,
             score
