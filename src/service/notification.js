@@ -55,7 +55,7 @@ module.exports = {
                 status.messages.errors++;
             }
             status.messages.queued--;
-            if (filteredUserList[i + 1]) await sleep(5000);
+            if (filteredUserList[i + 1]) await sleep(20 * 1000);
         }
 
         // Set busy to false, allowing process to run again
