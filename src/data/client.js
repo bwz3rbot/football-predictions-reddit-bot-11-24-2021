@@ -47,6 +47,7 @@ class Database {
         }
 
         this.user_score = {
+            insert: require('./queries/user_score/insert'),
             upsert: require('./queries/user_score/upsert'),
             select: require('./queries/user_score/select'),
             delete: require('./queries/user_score/delete'),

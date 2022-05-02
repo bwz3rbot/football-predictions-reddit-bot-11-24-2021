@@ -17,7 +17,7 @@ router.post('/edit', async (req, res, next) => {
     });
     let score;
     if (!updatedScore.rows.length) {
-        await database.user_score.insert({
+        await database.user_score.upsert({
             username: req.body.username,
             score: req.body.score
         });
