@@ -1,6 +1,7 @@
 const database = require('../data/client');
 const snoowrap = require('../reddit/client');
 const sleep = require('../util/sleep');
+const parseRateLimit = require('../util/parse_rate_limit_error');
 const status = {
     busy: false,
     messages: {
@@ -39,23 +40,46 @@ module.exports = {
         status.messages.total = filteredUserList.length;
 
 
+        console.log("Sending messages to filteredUserList: ", filteredUserList);
         // Send message for each user in the queue
         for (let i = 0; i < filteredUserList.length; i++) {
-            try {
-                await snoowrap.composeMessage({
-                    subject,
-                    text: body,
-                    to: filteredUserList[i]
-                });
-                status.messages.sent++;
 
-            } catch (err) {
-                console.log("Error sending message: ");
-                console.log(err);
-                status.messages.errors++;
+            const doTrySendMessage = async () => {
+                let numAttempts = 0;
+                const recurse = async () => {
+                    numAttempts++;
+                    try {
+                        console.log("Composing message: ", {
+                            subject,
+                            text: body,
+                            to: filteredUserList[i]
+                        });
+                        await snoowrap.composeMessage({
+                            subject,
+                            text: body,
+                            to: filteredUserList[i]
+                        });
+                        status.messages.sent++;
+
+                    } catch (err) {
+                        status.messages.errors++;
+                        console.log("Error sending message: ");
+                        console.log(err);
+                        const parsed = parseRateLimit(err.message);
+                        if (numAttempts < 3 && !isNan(parsed)) {
+                            await sleep(parsed);
+                            return doTrySendMessage();
+                        }
+                    }
+                }
+
+                return recurse();
             }
+
+            await doTrySendMessage();
             status.messages.queued--;
             if (filteredUserList[i + 1]) await sleep(20 * 1000);
+
         }
 
         // Set busy to false, allowing process to run again
