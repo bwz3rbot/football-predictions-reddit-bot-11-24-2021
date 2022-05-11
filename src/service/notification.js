@@ -66,7 +66,8 @@ module.exports = {
                         console.log("Error sending message: ");
                         console.log(err);
                         const parsed = parseRateLimit(err.message);
-                        if (numAttempts < 3 && !isNan(parsed)) {
+                        if (numAttempts < 3 && !isNaN(parsed)) {
+                            console.log("Rate limit error. Sleeping ", parsed, "ms");
                             await sleep(parsed);
                             return doTrySendMessage();
                         }
