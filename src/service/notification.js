@@ -62,7 +62,6 @@ module.exports = {
                         status.messages.sent++;
 
                     } catch (err) {
-                        status.messages.errors++;
                         console.log("Error sending message: ");
                         console.log(err);
                         const parsed = parseRateLimit(err.message);
@@ -70,6 +69,8 @@ module.exports = {
                             console.log("Rate limit error. Sleeping ", parsed, "ms");
                             await sleep(parsed);
                             return doTrySendMessage();
+                        } else {
+                            status.messages.errors++;
                         }
                     }
                 }
