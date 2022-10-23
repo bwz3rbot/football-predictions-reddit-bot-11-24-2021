@@ -43,9 +43,8 @@ module.exports = {
         console.log("Sending messages to filteredUserList: ", filteredUserList);
         // Send message for each user in the queue
         for (let i = 0; i < filteredUserList.length; i++) {
-
+            let numAttempts = 0;
             const doTrySendMessage = async () => {
-                let numAttempts = 0;
                 const recurse = async () => {
                     numAttempts++;
                     try {
