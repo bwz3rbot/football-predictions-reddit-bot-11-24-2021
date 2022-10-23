@@ -43,8 +43,8 @@ module.exports = {
         console.log("Sending messages to filteredUserList: ", filteredUserList);
         // Send message for each user in the queue
         for (let i = 0; i < filteredUserList.length; i++) {
-            let numAttempts = 0;
             const doTrySendMessage = async () => {
+                let numAttempts = 0;
                 const recurse = async () => {
                     numAttempts++;
                     try {
@@ -67,7 +67,7 @@ module.exports = {
                         if (numAttempts < 3 && !isNaN(parsed)) {
                             console.log("Rate limit error. Sleeping ", parsed, "ms");
                             await sleep(parsed);
-                            return doTrySendMessage();
+                            return recurse();
                         } else {
                             status.messages.errors++;
                         }
