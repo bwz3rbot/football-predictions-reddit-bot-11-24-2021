@@ -89,7 +89,7 @@ module.exports = async ({
                 console.log(guessedPlayerGoal);
                 const playerName = guessedPlayerGoal[0].toLowerCase();
                 const guessedGoalsNum = parseInt(guessedPlayerGoal[1]);
-                if (playerName === "" || isNan(guessedGoalsNum)) return;
+                if (playerName === "" || isNaN(guessedGoalsNum)) return;
 
                 let actualGoalsNum = matchResults.player_scores.find(player => player.name.toLowerCase() === playerName);
                 // If user guessed a player scored a goal who didnt - user loses 10 pts per goal guessed
